@@ -1,0 +1,44 @@
+---
+- name : Backup gitea
+  hosts: managed
+  become: true
+  vars:
+    backup_directory: "backups"
+    database_name: "gitea"
+
+  tasks:
+    - name: Get current date
+      set_fact:
+        current_date: "{{ ansible_date_time.date }}"
+
+    - name: Backup gitea
+      file:
+        path: "/tmp/{{ backup_directory }}/{{current_date}}"
+        state: directory
+        owner: gitea
+        group: gitea
+      become: true
+
+    # - name: Dump gitea data
+    #   become: true
+    #   become_user: gitea
+    #   command:
+    #     cmd: "gitea dump -c /etc/gitea/app.ini "
+    #     chdir: "/tmp/{{ backup_directory }}/{{current_date}}"
+
+    - name: Backup config files
+      fetch:
+        src: "{{ item }}"
+        dest: "/tmp/{{ backup_directory }}/{{current_date}}/"
+      with_items:
+        - /etc/gitea/app.ini
+        - /usr/lib/systemd/system/gitea.service
+        - /etc/systemd/system/multi-user.target.wants/gitea.service
+        # - /etc/nginx/conf.d/gitea.conf
+      # delegate_to: localhost
+
+    # - name: Copy backup file to local machine
+    #   hosts: host1
+    #   copy:
+    #     src: "/tmp/{{ backup_directory }}/{{current_date}}"
+    #     dest: "/tmp/{{ backup_directory }}/"

@@ -1,0 +1,5 @@
+[control]
+localhost ansible_connection=local
+
+[managed]
+host1 ansible_host=zongpitt.tplinkdns.com ansible_port=2002 ansible_user=zong
