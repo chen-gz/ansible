@@ -1,0 +1,34 @@
+# this file is used to backup docker container config files and data
+#
+---
+- name: Backup docker files
+  hosts: managed
+  become: true
+  vars:
+    backup_directory: "backups"
+
+  tasks:
+    - name: Get current date
+      set_fact:
+        current_date: "{{ ansible_date_time.date }}"
+    - name: Create backup working directory
+      become: true
+      file:
+        path: "/tmp/{{ backup_directory }}/{{current_date}}"
+        state: directory
+        mode: 0777
+    - name: Copy docker data
+      become: false
+      copy:
+        src: "{{ item }}"
+        dest: "/tmp/{{ backup_directory }}/{{current_date}}/"
+        remote_src: yes
+      with_items:
+        - /home/zong/dst
+        - /home/zong/ghost
+        - /home/zong/photoprism
+        - /home/zong/portainer
+        - /home/zong/blogB
+        - /home/zong/cloudreve
+        - /home/zong/jellyfin
+        - /home/zong/raddar

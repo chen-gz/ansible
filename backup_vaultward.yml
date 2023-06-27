@@ -9,7 +9,7 @@
     - name: Get current date
       set_fact:
         current_date: "{{ ansible_date_time.date }}"
-    - name: Backup vaultwarden
+    - name: Create backup working directory
       become: true
       file:
         path: "/tmp/{{ backup_directory }}/{{current_date}}"
