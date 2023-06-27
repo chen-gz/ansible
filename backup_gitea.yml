@@ -19,12 +19,12 @@
         group: gitea
       become: true
 
-    # - name: Dump gitea data
-    #   become: true
-    #   become_user: gitea
-    #   command:
-    #     cmd: "gitea dump -c /etc/gitea/app.ini "
-    #     chdir: "/tmp/{{ backup_directory }}/{{current_date}}"
+    - name: Dump gitea data
+      become: true
+      become_user: gitea
+      command:
+        cmd: "gitea dump -c /etc/gitea/app.ini -f gitea.zip"
+        chdir: "/tmp/{{ backup_directory }}/{{current_date}}"
 
     - name: Backup config files
       fetch:
@@ -34,11 +34,7 @@
         - /etc/gitea/app.ini
         - /usr/lib/systemd/system/gitea.service
         - /etc/systemd/system/multi-user.target.wants/gitea.service
+        - /tmp/{{ backup_directory }}/{{current_date}}/gitea.zip
         # - /etc/nginx/conf.d/gitea.conf
       # delegate_to: localhost
 
-    # - name: Copy backup file to local machine
-    #   hosts: host1
-    #   copy:
-    #     src: "/tmp/{{ backup_directory }}/{{current_date}}"
-    #     dest: "/tmp/{{ backup_directory }}/"
