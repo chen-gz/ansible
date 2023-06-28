@@ -24,8 +24,6 @@
         cmd: "gitea dump -c /etc/gitea/app.ini -f gitea.zip"
         chdir: "/tmp/{{ backup_directory }}/{{current_date}}"
 
-
-
     - name: Backup config files
       become: true
       become_user: gitea

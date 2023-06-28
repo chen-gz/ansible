@@ -1,0 +1,23 @@
+- name: Restore Vaultwarden
+  hosts: managed
+  become: true
+
+  vars:
+    bak_dir: "/tmp/vaultwarden"
+
+  tasks:
+    - name: Fetch data from R2
+      command:
+        cmd: "mcli cp r2/backup/vaultwarden.tar.gz vaultwarden.tar.gz"
+        chdir: "{{ bak_dir }}"
+
+    - name: Extract Vaultwarden data from backup
+      command:
+        cmd: "tar -xzvf {{ bak_dir }}/vaultwarden.tar.gz -C /"
+      args:
+        chdir: "{{ bak_dir }}"
+
+    - name: Start Vaultwarden Service
+      service:
+        name: vaultwarden
+        state: started

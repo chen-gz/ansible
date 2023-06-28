@@ -1,57 +1,28 @@
----
-- name: Bacup vaultwarden
+- name: Backup vaultwarden
   hosts: managed
   become: true
+
   vars:
-    backup_directory: "backups"
+    bak_dir: "/tmp/vaultwarden"
 
   tasks:
-    - name: Get current date
-      set_fact:
-        current_date: "{{ ansible_date_time.date }}"
     - name: Create backup working directory
-      become: true
       file:
-        path: "/tmp/{{ backup_directory }}/{{current_date}}"
+        path: "{{ bak_dir }}"
         state: directory
-    - name: Copy vaultwarden data
-      become: true
-      command:
-        cmd: "tar -czvf vaultwarden_var_lib.tar.gz /var/lib/vaultwarden"
-        chdir: "/tmp/{{ backup_directory }}/{{current_date}}"
-    - name: Backup config files
-      become: true
-      copy:
-        src: "{{ item }}"
-        dest: "/tmp/{{ backup_directory }}/{{current_date}}/"
-        remote_src: yes
-      with_items:
-        - /etc/vaultwarden.env
-    - name: package to one tar file
-      become: true
-      command:
-        cmd: "tar -czvf vaultwarden.tar.gz vaultwarden_var_lib.tar.gz vaultwarden.env"
-        chdir: "/tmp/{{ backup_directory }}/{{current_date}}"
 
-    - name: Upload backup file (vaultwarden.tar.gz) to R2
+    - name: Package vaultwarden data and config files
+      command:
+        cmd: "tar -czvf vaultwarden.tar.gz /var/lib/vaultwarden /etc/vaultwarden.env"
+        chdir: "{{ bak_dir }}"
+
+    - name: Upload backup file to R2
       become: false
       command:
         cmd: "mcli cp vaultwarden.tar.gz r2/backup/vaultwarden.tar.gz"
-        chdir: "/tmp/{{ backup_directory }}/{{current_date}}"
+        chdir: "{{ bak_dir }}"
 
-    - name: remove vaultwarden_var_lib.tar.gz and vaultwarden.env
-      become: true
+    - name: Remove backup file
       file:
-        path: "{{ item }}"
+        path: "{{ bak_dir }}/vaultwarden.tar.gz"
         state: absent
-      loop:
-        - /tmp/{{ backup_directory }}/{{current_date}}/vaultwarden_var_lib.tar.gz
-        - /tmp/{{ backup_directory }}/{{current_date}}/vaultwarden.env
-        - /tmp/{{ backup_directory }}/{{current_date}}/vaultwarden.tar.gz
-
-    # - name: Upload to minio use mcli
-    #   become: false
-    #   become_user: vaultwarden
-    #   command:
-    #     cmd: "mcli cp vaultwarden.tar.gz local/minio/vaultwarden.tar.gz"
-    #     chdir: "/tmp/{{ backup_directory }}/{{current_date}}"
