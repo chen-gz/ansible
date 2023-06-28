@@ -1,0 +1,31 @@
+---
+- name : Backup drone
+  hosts: managed
+  vars:
+    backup_directory: "backups"
+
+  tasks:
+    - name: Get current date
+      set_fact:
+        current_date: "{{ ansible_date_time.date }}"
+
+    - name: Backup Drone
+      copy:
+        src: "{{ item }}"
+        dest: /tmp/{{ backup_directory }}/{{current_date}}/drone/
+        remote_src: yes
+        recursive: yes
+      with_items:
+        - /var/lib/drone
+        - /etc/systemd/system/drone-runner-docker.service.d
+        - /etc/systemd/system/drone-runner-exec.service.d
+        - /etc/systemd/system/drone.service.d
+
+    - name: package gitea to one tar file
+      command:
+        cmd: "tar -czvf drone.tar.gz drone"
+        chdir: "/tmp/{{ backup_directory }}/{{current_date}}"
+    - name: upload drone file to R2
+      command:
+        cmd: "mcli cp drone.tar.gz r2/backup/drone.tar.gz"
+        chdir: "/tmp/{{ backup_directory }}/{{current_date}}"

@@ -24,11 +24,21 @@
         dest: "/tmp/{{ backup_directory }}/{{current_date}}/"
         remote_src: yes
       with_items:
-        - /home/zong/dst
-        - /home/zong/ghost
-        - /home/zong/photoprism
-        - /home/zong/portainer
-        - /home/zong/blogB
         - /home/zong/cloudreve
+        - /usr/lib/systemd/system/cloudreve.service
+        - /home/zong/ghost
         - /home/zong/jellyfin
         - /home/zong/raddar
+        - /home/zong/blogB
+        - /home/zong/homer
+        - /home/zong/memos
+        - /home/zong/portainer
+        - /home/zong/photoprism
+    - name: package to one tar file
+      command:
+        cmd: "tar --mode=644 -czvf docker.tar.gz cloudreve ghost jellyfin raddar blogB homer memos portainer photoprism"
+        chdir: "/tmp/{{ backup_directory }}/{{current_date}}"
+    - name: Upload backup file (docker.tar.gz) to R2
+      command:
+        cmd: "mcli cp docker.tar.gz r2/backup/docker.tar.gz"
+        chdir: "/tmp/{{ backup_directory }}/{{current_date}}"
