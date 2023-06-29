@@ -2,7 +2,7 @@
 - name: Backup Gitea
   hosts: managed
   vars:
-    backup_file: "/tmp/gitea_backup.tar.gz"
+    backup_file: "/tmp/gitea.tar.gz"
   tasks:
 
     - name: Package Gitea files

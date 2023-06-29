@@ -1,5 +1,5 @@
 ---
-- name: Enable NTP and Set Timezone
+- name: Install arclinux
   hosts: managed
     # become: true
   vars:
@@ -99,4 +99,3 @@
         - "systemctl enable sshd"
         - "systemctl enable dhcpcd"
         - "sed -i 's/^#Port 22$/Port 2002/' /etc/ssh/sshd_config"
-
