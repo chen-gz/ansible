@@ -1,0 +1,19 @@
+---
+- name: Backup nginx and let's encrypt
+  hosts: managed
+  become: true
+
+  tasks:
+    - name: Package nginx and let's encrypt files into one tar archive
+      become: true
+      command:
+        cmd: "tar -czvf /tmp/nginx.tar.gz /etc/nginx /etc/letsencrypt"
+
+    - name: Upload nginx file to R2
+      command:
+        cmd: "mcli cp /tmp/nginx.tar.gz r2/backup/nginx.tar.gz"
+
+    - name: Remove temporary archive file
+      file:
+        path: /tmp/nginx.tar.gz
+        state: absent
