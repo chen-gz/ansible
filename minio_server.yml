@@ -1,0 +1,11 @@
+---
+- name: Install and configure MinIO Client
+  hosts: managed
+  become: yes
+
+  tasks:
+    - name: Install MinIO Client
+      pacman:
+        name: minio
+        state: present
+
