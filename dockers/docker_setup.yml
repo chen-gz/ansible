@@ -1,0 +1,18 @@
+---
+- name: Install Docker and Docker Compose
+  hosts: managed
+  become: true
+  tasks:
+    - name: Install Docker and Docker Compose using Pacman
+      pacman:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - docker
+        - docker-compose
+
+    - name: Copy Docker tarball to /tmp
+      command: mcli cp r2/backup/docker.tar.gz /tmp/docker.tar.gz
+
+    - name: Extract Docker tarball
+      command: tar -zxvf /tmp/docker.tar.gz -C /

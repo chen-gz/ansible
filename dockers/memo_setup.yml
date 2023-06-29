@@ -1,0 +1,13 @@
+- name: Setup memo
+  hosts: managed
+  become: true
+
+  tasks:
+    - name: Start Docker service if it is not running
+      service:
+        name: docker
+        state: started
+    - name: enable memo use docker-compose
+      command: docker-compose up -d
+      args:
+        chdir: /home/zong/memos

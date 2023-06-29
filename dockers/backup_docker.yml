@@ -17,7 +17,7 @@
     - name: package to one tar file
       become: true
       command:
-        cmd: "tar --mode=644 -czvf docker.tar.gz 
+        cmd: "tar -czvf docker.tar.gz
               /home/zong/cloudreve
               /usr/lib/systemd/system/cloudreve.service
               /home/zong/ghost
@@ -37,4 +37,3 @@
       become: false
       command:
         cmd: "mcli cp {{ bak_dir }}/docker.tar.gz r2/backup/docker.tar.gz"
-
