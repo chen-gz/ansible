@@ -1,0 +1,102 @@
+---
+- name: Enable NTP and Set Timezone
+  hosts: managed
+    # become: true
+  vars:
+    timezone: "America/New_York"
+    password: "password"
+    new_user_name: "zong"
+
+  tasks:
+    - name: Enable NTP
+      command: timedatectl set-ntp true
+
+    - name: Set Timezone
+      command: timedatectl set-timezone {{ timezone }}
+
+    - name: Create partition table
+      parted:
+        device: /dev/nvme0n1
+        label: gpt
+
+    - name: Create 100MB FAT32 partition
+      parted:
+        device: /dev/nvme0n1
+        number: 1
+        part_end: 100MB
+        flags: [boot, esp]
+        state: present
+      become: true
+      become_user: root
+
+    - name: Format first partition as FAT32
+      command: mkfs.fat -F32 /dev/nvme0n1p1
+      become: true
+      become_user: root
+
+    - name: Create second partition
+      parted:
+        device: /dev/nvme0n1
+        number: 2
+        part_start: 100MB
+        state: present
+      become: true
+      become_user: root
+
+    - name: Format second partition as ext4
+      command: mkfs.ext4 /dev/nvme0n1p2
+      become: true
+      become_user: root
+
+    - name: Mount second partition to /mnt
+      mount:
+        src: /dev/nvme0n1p2
+        path: /mnt
+        fstype: ext4
+        state: mounted
+      become: true
+      become_user: root
+
+    - name: Create /mnt/boot/EFI directory
+      file:
+        path: /mnt/boot/EFI
+        state: directory
+        mode: '0755'
+      become: true
+      become_user: root
+
+    - name: Mount first partition to /mnt/boot/EFI
+      mount:
+        src: /dev/nvme0n1p1
+        path: /mnt/boot/EFI
+        fstype: vfat
+        state: mounted
+
+    - name: Update archlinux-keyring
+      command: pacman -Sy archlinux-keyring --noconfirm
+
+    - name: Install base packages
+      command: pacstrap /mnt base base-devel linux linux-firmware dhcpcd docker docker-compose hdparm openssh grub
+
+
+    - name: Generate fstab (check manually)
+      command: genfstab -U /mnt >> /mnt/etc/fstab
+
+    - name: Chroot into the installed system
+      shell: arch-chroot /mnt /bin/bash -c "{{ item }}"
+      with_items:
+        - "timedatectl set-timezone {{ timezone }}"
+        - "echo 'root:{{ password }}' | chpasswd"
+        - "useradd -m -s /bin/bash {{ new_user_name }}"
+        - "echo '{{ new_user_name }}:{{ password }}' | chpasswd"
+        - "sed -i 's/^#en_US.UTF-8 UTF-8$/en_US.UTF-8 UTF-8/' /etc/locale.gen"
+        - "locale-gen"
+        - "echo 'LANG=en_US.UTF-8' > /etc/locale.conf"
+        - "pacman -Syu --noconfirm efibootmgr neovim python"
+        - "grub-install --target=x86_64-efi --efi-directory=/boot/EFI"
+        - "grub-mkconfig -o /boot/grub/grub.cfg"
+        - "systemctl start sshd"
+        - "systemctl enable sshd"
+        - "systemctl enable dhcpcd"
+        - "sed -i 's/^#Port 22$/Port 2002/' /etc/ssh/sshd_config"
+

@@ -1,0 +1,54 @@
+---
+- name: Configure Gitea
+  hosts: managed
+  become: true
+  vars:
+    bak_dir: "/tmp/gitea"
+
+  tasks:
+    - name: Update pacman package cache
+      pacman:
+        update_cache: yes
+
+    - name: Check if Gitea is installed
+      pacman:
+        name: gitea
+        state: list
+      register: gitea_status
+      ignore_errors: true
+
+    - name: Install Gitea
+      pacman:
+        name: gitea
+        state: present
+      when: gitea_status|failed
+
+    - name: Create backup working directory
+      file:
+        path: "{{ bak_dir }}"
+        state: directory
+
+
+    - name: Fetch data from R2
+      command:
+        cmd: "mcli cp r2/backup/gitea.tar.gz gitea.tar.gz"
+        chdir: "{{ bak_dir }}"
+
+    - name: Extract data from bakcup
+      command:
+        cmd: "tar -xzvf {{ bak_dir }}/gitea.tar.gz"
+        chdir: "{{ bak_dir }}"
+
+    - name: Extract gitea dumped data
+      command:
+        command:
+
+    - name: Start gitea Service
+      service:
+        name: gitea
+        state: started
+
+    - name: delete working folder
+      file:
+        path: "{{ bak_dir }}"
+        state: absent

@@ -1,0 +1,45 @@
+---
+- name: Configure nginx
+  hosts: managed
+  become: true
+  vars:
+    bak_dir: "/tmp/nginx"
+
+  tasks:
+    - name: Update pacman package cache
+      pacman:
+        update_cache: yes
+
+
+    - name: Install Nginx
+      pacman:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - nginx
+        - certbot-nginx
+
+    - name: Create backup working directory
+      file:
+        path: "{{ bak_dir }}"
+        state: directory
+
+
+    - name: Fetch data from R2
+      command:
+        cmd: "mcli cp r2/backup/nginx.tar.gz nginx.tar.gz"
+        chdir: "{{ bak_dir }}"
+
+    - name: Extract data from bakcup
+      command:
+        cmd: "tar -xzvf {{ bak_dir }}/nginx.tar.gz -C /etc/nginx"
+
+    - name: Start Nginx Service
+      service:
+        name: nginx
+        state: started
+
+    - name: delete working folder
+      file:
+        path: "{{ bak_dir }}"
+        state: absent

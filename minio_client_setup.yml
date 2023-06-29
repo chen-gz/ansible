@@ -1,0 +1,27 @@
+
+
+---
+- name: Install and configure MinIO Client
+  hosts: managed
+  become: yes
+  vars:
+    minio_r2_url: https://7184d77766371deb651cd4eaefb41a4a.r2.cloudflarestorage.com
+    minio_r2_access_key: d449f471a206a79f23338c15298f3443
+    minio_r2_secret_key: 2d569d3996b57df76c654a01c782435fd7b305549273d90ccb670d89ef7e79ad
+
+
+  tasks:
+    - name: Install MinIO Client
+      pacman:
+        name: minio-client
+        state: present
+
+    - name: Create or update MinIO Client configuration
+      command: >
+        mcli config host add r2
+        {{ minio_r2_url }}
+        {{ minio_r2_access_key }}
+        {{ minio_r2_secret_key }}
+
+    - name: Verify MinIO Client configuration
+      command: mcli config host list
