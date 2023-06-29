@@ -1,0 +1,20 @@
+---
+- name: Backup Gitea
+  hosts: managed
+  vars:
+    backup_file: "/tmp/gitea_backup.tar.gz"
+  tasks:
+
+    - name: Package Gitea files
+      command: "tar -czvf {{ backup_file }} /etc/gitea/app.ini /var/lib/gitea"
+      become: true
+
+    - name: Upload backup file to R2
+      command: "mcli cp {{ backup_file }} r2/backup/gitea.tar.gz"
+      become: true
+
+    - name: Delete gitea files
+      become: true
+      file:
+        path: "{{ backup_file }}"
+        state: absent
