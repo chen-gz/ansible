@@ -1,31 +1,34 @@
 ---
-- name: Configure Gitea
+- name: Configure vaultwarden
   hosts: managed
   become: true
   vars:
-    tmp_file : "/tmp/gitea.tar.gz"
+    tmp_file : "/tmp/vaultwarden.tar.gz"
 
   tasks:
     - name: Update pacman package cache
       pacman:
         update_cache: yes
 
-    - name: Install Gitea
+    - name: Install vaultwarden
       pacman:
-        name: gitea
+        name: "{{ item }}"
         state: present
+      with_items:
+        - vaultwarden
+        - vaultwarden-web
 
     - name: Fetch data from R2
       command:
-        cmd: "mcli cp r2/backup/gitea.tar.gz {{ tmp_file }}"
+        cmd: "mcli cp r2/backup/vaultwarden.tar.gz {{ tmp_file }}"
 
     - name: Extract data from bakcup
       command:
         cmd: "tar -xzvf {{ tmp_file }} -C /"
 
-    - name: Start gitea Service
+    - name: Start vaultwarden Service
       service:
-        name: gitea
+        name: vaultwarden
         state: started
 
     - name: delete tmp file
