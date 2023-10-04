@@ -1,0 +1,26 @@
+---
+- name: setup MariaDB
+  hosts: managed
+  become: true
+
+  tasks:
+    - name: Install MariaDB
+      pacman:
+        name: "{{ item }}"
+        update_cache: yes
+        state: present
+      loop:
+        - mariadb
+    - name: Before starting
+      command:
+        cmd: "mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql"
+
+    - name: Start/Enable MariaDB Service
+      service:
+        name: mariadb
+        enabled: yes
+        state: started
+
+    #- name: Improve security
+    #  command:
+    #      cmd: "mariadb-secure-installation"
