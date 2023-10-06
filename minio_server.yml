@@ -6,6 +6,78 @@
   tasks:
     - name: Install MinIO Client
       pacman:
-        name: minio
+        name: "{{ item }}"
         state: present
+      with_items:
+        - parted
+        - minio
+        - arch-install-scripts
 
+          # - name: Create GPT partitions with protective MBR
+          #   command: echo -e "o\nw\nY" | gdisk {{ item }}
+          #   with_items:
+          #     - /dev/sda
+          #     - /dev/sdb
+          #     - /dev/sdc
+          #     - /dev/sdd
+
+    - name: Partition disks
+      parted:
+        label: gpt
+        device: "{{ item }}"
+        number: 1
+        state: present
+      with_items:
+        - /dev/sda
+        - /dev/sdb
+        - /dev/sdc
+        - /dev/sdd
+
+    - name: Format partitions as ext4
+      filesystem:
+        fstype: ext4
+        dev: "{{ item }}1"
+      with_items:
+        - /dev/sda
+        - /dev/sdb
+        - /dev/sdc
+        - /dev/sdd
+
+    - name: Create mount directories
+      file:
+        path: "/srv/minio/data{{ item }}"
+        state: directory
+        mode: "0755"
+      with_items:
+        - a
+        - b
+        - c
+        - d
+
+    - name: Mount partitions
+      mount:
+        path: "/srv/minio/data{{ item }}"
+        src: "/dev/sd{{ item }}1"
+        fstype: ext4
+        state: mounted
+      with_items:
+        - a
+        - b
+        - c
+        - d
+    - name: Update MINIO_VOLUMES in configuration file
+      lineinfile:
+        path: /etc/minio/minio.conf
+        regexp: '^MINIO_VOLUMES='
+        line: 'MINIO_VOLUMES="/srv/minio/dataa /srv/minio/datab /srv/minio/datac /srv/minio/datad"'
+        backrefs: yes
+
+    - name: Start MinIO Service
+      systemd:
+        name: minio
+        state: started
+
+
+    - name: Generate /etc/fstab using genfstab
+      command: genfstab -U / >> /etc/fstab
+      changed_when: false

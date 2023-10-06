@@ -1,0 +1,80 @@
+---
+- name: Configure NordVPN
+  hosts: managed
+  become: true
+  gather_facts: true                  
+  vars:
+    nordvpn_token: "e9f2aba327c6c00576c57c313b8427cf351d092ff3f6cda4b7917ed029865d2c"
+
+
+  tasks:
+    - name: Update pacman package cache
+      pacman:
+        update_cache: yes
+    - name: Check package status
+      pacman:
+        name: nordvpn-bin
+        state: installed
+      register: package_status
+
+
+
+    - name: Clone AUR package
+      command: 
+        cmd: "git clone https://aur.archlinux.org/nordvpn-bin.git"
+        chdir: "/tmp"
+      become: false
+      when: package_status is failed
+
+    - name: compile package
+      become: true
+      command: 
+        cmd: "makepkg -si --noconfirm"
+        chdir: "/tmp/nordvpn-bin"
+      when : package_status is failed
+
+
+        # ip rule add sport 22 table main priority 100
+        # ip rule add sport 80 table main priority 100
+        # ip rule add sport 443 table main priority 100
+        # ip rule add sport 2002 table main priority 100
+
+    - name: make port 22, 80, 443, 2002 not forward to vpn use ip rule
+      become: true
+      command: 
+        cmd: "{{ item }}"
+      loop:
+        - "ip rule add sport 22 table main priority 100"
+        - "ip rule add sport 80 table main priority 101"
+        - "ip rule add sport 443 table main priority 102"
+        - "ip rule add sport 2002 table main priority 103"
+
+    - name: start nordvpn service
+      service:
+        name: nordvpnd
+        state: started
+        enabled: yes
+      become: true
+    - name: add ports to nordvpn whitelist
+      command: nordvpn whitelist add port {{ item }}
+      loop:
+        - 22
+        - 80
+        - 443
+        - 2002
+
+        # - name: loging to nordvpn
+        #   command: nordvpn login --token {{ nordvpn_token }}
+        #   become: true
+
+
+    - name: connect to nordvpn
+      command: nordvpn connect
+      become: true
+
+
+
+
+
+
+
