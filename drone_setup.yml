@@ -1,0 +1,39 @@
+---
+- name: Configure Drone
+  hosts: managed
+  become: true
+  vars:
+    tmp_file : "/tmp/drone.tar.gz"
+    remote_file: "r2/backup/drone.tar.gz"
+
+  tasks:
+    - name: Update pacman package cache
+      pacman:
+        update_cache: yes
+
+    - name: Install drone 
+      pacman:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - drone
+        - drone-runner-docker
+        - drone-runner-exec
+
+    - name: Fetch data from R2
+      command:
+        cmd: "mcli cp {{remote_file}} {{ tmp_file }}"
+
+    - name: Extract data from bakcup
+      command:
+        cmd: "tar -xzvf {{ tmp_file }} -C /"
+
+    - name: Start drone Service
+      service:
+        name: drone
+        state: started
+
+    - name: delete tmp file
+      file:
+        path: "{{ tmp_file }}"
+        state: absent

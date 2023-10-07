@@ -17,7 +17,7 @@
         chdir: "{{ bak_dir }}"
 
     - name: Upload backup file to R2
-      become: false
+      become: true
       command:
         cmd: "mcli cp vaultwarden.tar.gz r2/backup/vaultwarden.tar.gz"
         chdir: "{{ bak_dir }}"
