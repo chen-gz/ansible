@@ -1,0 +1,19 @@
+---
+- name: backup MariaDB
+  hosts: managed
+  become: true
+  vars:
+    backup_folder: "/tmp/mariadb"
+    backup_file: "/tmp/mariadb.tar.gz"
+    remote_backup_file: "r2/backup/mariadb.tar.gz"
+
+
+  tasks:
+    - name: Backup MariaDB
+      command: "mariabackup --backup --target-dir={{ backup_folder }} --user=zong --password=Connie"
+
+    - name: Zip backup folder
+      command: "tar -czvf {{ backup_file }} {{ backup_folder }}"
+
+    - name: Upload backup file to R2
+      command: "mcli cp {{ backup_file }} {{ remote_backup_file }}"
