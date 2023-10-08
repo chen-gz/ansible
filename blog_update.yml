@@ -1,0 +1,27 @@
+---
+- name: update blog backend
+  hosts: managed
+  become: true
+  vars:
+    TOKEN: dd09c8c88f63814620584cedc12725ab22d5a787
+    binary_url: https://gitea.ggeta.com/guangzong/gb/releases/download/2023-10-08-18-11-18/go_blog
+
+  tasks:
+    - name: stop service
+      systemd:
+        name: blog
+        state: stopped
+        enabled: no
+    - name: retrieve latest binary
+      get_url:
+        url: "{{ binary_url }}"
+        dest: /home/zong/blog
+        headers: 
+          Authorization: "Bearer {{ TOKEN }}"
+    - name: start service
+      systemd:
+        name: blog
+        state: started
+        enabled: yes
+
+      
