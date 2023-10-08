@@ -33,6 +33,11 @@
         name: drone
         state: started
 
+    - name: Start drone-runner-exec Service
+      service:
+        name: drone-runner-exec
+        state: started
+
     - name: delete tmp file
       file:
         path: "{{ tmp_file }}"
