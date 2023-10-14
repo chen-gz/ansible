@@ -4,6 +4,7 @@
 
   vars:
     bak_dir: "/tmp/vaultwarden"
+    remote_backup_file: "local/server-backup/vaultwarden.tar.gz"
 
   tasks:
     - name: Create backup working directory
@@ -16,10 +17,10 @@
         cmd: "tar -czvf vaultwarden.tar.gz /var/lib/vaultwarden /etc/vaultwarden.env"
         chdir: "{{ bak_dir }}"
 
-    - name: Upload backup file to R2
+    - name: Upload backup file to minio
       become: true
       command:
-        cmd: "mcli cp vaultwarden.tar.gz r2/backup/vaultwarden.tar.gz"
+        cmd: "mcli cp vaultwarden.tar.gz {{ remote_backup_file }}"
         chdir: "{{ bak_dir }}"
 
     - name: Remove backup file

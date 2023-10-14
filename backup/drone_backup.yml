@@ -3,6 +3,7 @@
   hosts: managed
   vars:
     bak_dir: "/tmp/"
+    remote_bakup_file: "local/server-backup/drone.tar.gz"
 
   tasks:
 
@@ -17,6 +18,6 @@
           etc/systemd/system/drone-runner-exec.service.d
           etc/systemd/system/drone.service.d
 
-    - name: Upload drone backup file to R2
+    - name: Upload drone backup file to minio
       command:
-        cmd: "mcli cp {{ bak_dir}}/drone.tar.gz r2/backup/drone.tar.gz"
+        cmd: "mcli cp {{ bak_dir}}/drone.tar.gz {{ remote_bakup_file }}"

@@ -2,16 +2,29 @@
 - name: update blog backend
   hosts: managed
   become: true
+  gather_facts: yes
   vars:
     TOKEN: dd09c8c88f63814620584cedc12725ab22d5a787
-    binary_url: https://gitea.ggeta.com/guangzong/gb/releases/download/2023-10-08-18-11-18/go_blog
+    binary_url: ""
 
   tasks:
+    - name: Set LATEST_VERSION
+      become: false
+      shell: |
+        LATEST_VERSION=$(tea r ls --repo=gb --limit=1 | sed -n '5p' | awk -F '|' '{print $2}' | tr -d '[:space:]')
+        echo "$LATEST_VERSION"
+      register: latest_version_output
+
+    - name: Set binary_url
+      set_fact:
+        binary_url: "https://gitea.ggeta.com/guangzong/gb/releases/download/{{ latest_version_output.stdout }}/go_blog"
+
     - name: stop service
       systemd:
         name: blog
         state: stopped
         enabled: no
+
     - name: retrieve latest binary
       get_url:
         url: "{{ binary_url }}"

@@ -4,16 +4,20 @@
   become: true
   vars:
     backup_folder: "/tmp/mariadb"
-    backup_file: "/tmp/mariadb.tar.gz"
-    remote_backup_file: "r2/backup/mariadb.tar.gz"
+    backup_file: "/tmp/mariadb-backup.tar.gz"
+    remote_backup_file: "local/server-backup/mariadb-backup.tar.gz"
 
 
   tasks:
     - name: Backup MariaDB
-      command: "mariabackup --backup --target-dir={{ backup_folder }} --user=zong --password=Connie"
+      command: 
+        cmd: "mariabackup --backup --target-dir={{ backup_folder }} --user=zong --password=Connie"
+      args:
+        creates: "{{ backup_folder }}"
+      
 
     - name: Zip backup folder
       command: "tar -czvf {{ backup_file }} {{ backup_folder }}"
 
-    - name: Upload backup file to R2
+    - name: Upload backup file to minio
       command: "mcli cp {{ backup_file }} {{ remote_backup_file }}"

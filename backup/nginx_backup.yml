@@ -2,6 +2,8 @@
 - name: Backup nginx and let's encrypt
   hosts: managed
   become: true
+  vars:
+    remote_backup_file: "local/server-backup/nginx-backup.tar.gz"
 
   tasks:
     - name: Package nginx and let's encrypt files into one tar archive
@@ -9,9 +11,9 @@
       command:
         cmd: "tar -czvf /tmp/nginx.tar.gz /etc/nginx /etc/letsencrypt"
 
-    - name: Upload nginx file to R2
+    - name: Upload nginx file to minio
       command:
-        cmd: "mcli cp /tmp/nginx.tar.gz r2/backup/nginx.tar.gz"
+        cmd: "mcli cp /tmp/nginx.tar.gz {{ remote_backup_file }}"
 
     - name: Remove temporary archive file
       file:

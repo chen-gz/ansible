@@ -3,14 +3,15 @@
   hosts: managed
   vars:
     backup_file: "/tmp/gitea.tar.gz"
+    remote_backup_file: "local/server-backup/gitea-backup.tar.gz"
   tasks:
 
     - name: Package Gitea files
       command: "tar -czvf {{ backup_file }} /etc/gitea/app.ini /var/lib/gitea"
       become: true
 
-    - name: Upload backup file to R2
-      command: "mcli cp {{ backup_file }} r2/backup/gitea.tar.gz"
+    - name: Upload backup file to minio
+      command: "mcli cp {{ backup_file }} {{ remote_backup_file }}"
       become: true
 
     - name: Delete gitea files
