@@ -9,7 +9,13 @@
   tasks:
     - name: Package ssh config
       command:
-        cmd: "tar -czvf  {{ backup_file }} ~/.ssh ~/.mc ~/.gitconfig"
+        cmd: |
+          tar -czvf  {{ backup_file }}
+          -C ~/
+          ~/.ssh
+          ~/.mc
+          ~/.gitconfig
+          ~/.ideavimrc
 
     - name: Upload backup file to minio
       command:
