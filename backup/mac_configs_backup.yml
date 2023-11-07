@@ -1,0 +1,21 @@
+---
+- name: Backup ssh configs/minio client config
+  hosts: control
+  become: false
+  vars:
+    backup_file: "/tmp/config-backup.tar.gz"
+    remote_backup_file: "local/server-backup/mac-config-backup.tar.gz"
+
+  tasks:
+    - name: Package ssh config
+      command:
+        cmd: "tar -czvf  {{ backup_file }} ~/.ssh ~/.mc"
+
+    - name: Upload backup file to minio
+      command:
+        cmd: "mc cp {{ backup_file }} {{ remote_backup_file }}"
+
+    - name: Remove temporary archive file
+      file:
+        path: "{{ backup_file }}"
+        state: absent
