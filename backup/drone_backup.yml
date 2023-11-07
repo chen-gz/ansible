@@ -2,7 +2,7 @@
 - name: Backup drone and upload to R2
   hosts: managed
   vars:
-    bak_dir: "/tmp/"
+    backup_file: "/tmp/drone.tar.gz"
     remote_bakup_file: "local/server-backup/drone.tar.gz"
 
   tasks:
@@ -11,7 +11,7 @@
       become: true
       command:
         cmd: |
-          tar -czvf {{ bak_dir }}/drone.tar.gz
+          tar -czvf {{ backup_file }}
           -C /
           var/lib/drone
           etc/systemd/system/drone-runner-docker.service.d
@@ -19,5 +19,5 @@
           etc/systemd/system/drone.service.d
 
     - name: Upload drone backup file to minio
-      command:
-        cmd: "mcli cp {{ bak_dir}}/drone.tar.gz {{ remote_bakup_file }}"
+      become: true
+      command: "mcli cp {{ backup_file }} {{ remote_bakup_file }}"
