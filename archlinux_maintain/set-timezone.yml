@@ -1,0 +1,10 @@
+---
+- name: Configure SSH
+  hosts: pc
+  vars:
+    # us - America/New_York
+    timezone: "America/New_York"
+  tasks:
+    - name: set timezone
+      command: timedatectl set-timezone {{ timezone }}
+      become: true

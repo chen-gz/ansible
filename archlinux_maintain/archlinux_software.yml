@@ -31,22 +31,23 @@
         state: absent
       with_items:
         - xterm # xterm when gnome-terminal not working
+        - dconf-editor
 
-    - name: gdm set to x11
-      become: true
-      lineinfile:
-        path: /etc/gdm/custom.conf
-        regexp: "^#?WaylandEnable"
-        line: "WaylandEnable=false"
-    - name: try to update locale
-      become: true
-      locale_gen:
-        name: en_US.UTF-8
-        state: present
+    # - name: gdm set to x11
+    #   become: true
+    #   lineinfile:
+    #     path: /etc/gdm/custom.conf
+    #     regexp: "^#?WaylandEnable"
+    #     line: "WaylandEnable=false"
+    # - name: try to update locale
+    #   become: true
+    #   locale_gen:
+    #     name: en_US.UTF-8
+    #     state: present
 
-    - name: enable gdm
-      become: true
-      service:
-        name: gdm
-        state: started
-        enabled: true
+    # - name: enable gdm
+    #   become: true
+    #   service:
+    #     name: gdm
+    #     state: started
+    #     enabled: true

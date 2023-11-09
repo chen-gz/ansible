@@ -1,0 +1,13 @@
+---
+- name: Configure SSH
+  hosts: pc
+  vars:
+    my_key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
+    user: zong
+  tasks:
+    - name: copy secrete key to remote
+      copy:
+        src: ~/.ssh/id_ed25519
+        dest: ~/.ssh/id_ed25519
+        mode: 0600
+      become: false
