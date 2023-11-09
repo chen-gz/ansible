@@ -1,0 +1,21 @@
+---
+- name: Configure minio client for archlinux
+  hosts: pc
+  vars:
+    config_src: "~/.mc/"                    # for macos
+    config_dest: "~/.mcli"                  # for archlinux
+  tasks:
+    - name: install minio client
+      become: true
+      pacman:
+        name: "minio-client"
+        state: present
+    - name: copy settings to pc the whole folder ~/.mc
+      # copy the content of ~/.mc to ~/.mcli; not the folder ~/.mc
+      copy:
+        src: "{{ config_src }}"
+        dest: "{{ config_src }}"
+      become: false
+    - name: rename ~/.mc to ~/.mcli
+      command: mv {{ config_src }} {{ config_dest }}
+      become: false

@@ -1,0 +1,11 @@
+---
+- name: Configure SSH
+  hosts: pc
+  vars:
+    kerserver: hkps://keys.openpgp.org
+    my_key: 20AE4BA8FF696FB5E21AE9D0636538D58AF1006D
+    user: zong
+  tasks:
+    - name: get gpg public key from key server
+      command: gpg --keyserver {{ kerserver }} --recv-keys {{ my_key }}
+      become: false
