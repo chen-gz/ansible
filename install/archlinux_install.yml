@@ -1,14 +1,17 @@
 ---
+# brefore using this script, should check each block. Most operation are not recoverable and not idempotent.
 - name: Install arclinux
-  hosts: managed
-    # become: true
+  hosts: localhost
+  become: true
+
   vars:
     timezone: "America/New_York"
     password: "password"
     new_user_name: "zong"
+    disk: "/dev/nvme1n1" # this should be check before using this script.
 
   tasks:
-    - name: Enable NTP
+    - name: Enable NTP (Network Time Protocol)
       command: timedatectl set-ntp true
 
     - name: Set Timezone
@@ -16,12 +19,12 @@
 
     - name: Create partition table
       parted:
-        device: /dev/nvme0n1
+        device: "{{ disk }}"
         label: gpt
 
     - name: Create 100MB FAT32 partition
       parted:
-        device: /dev/nvme0n1
+        device: "{{ disk }}"
         number: 1
         part_end: 100MB
         flags: [boot, esp]
@@ -30,13 +33,13 @@
       become_user: root
 
     - name: Format first partition as FAT32
-      command: mkfs.fat -F32 /dev/nvme0n1p1
+      command: "mkfs.fat -F32 {{ disk }}p1"
       become: true
       become_user: root
 
     - name: Create second partition
       parted:
-        device: /dev/nvme0n1
+        device: "{{ disk }}"
         number: 2
         part_start: 100MB
         state: present
@@ -44,13 +47,13 @@
       become_user: root
 
     - name: Format second partition as ext4
-      command: mkfs.ext4 /dev/nvme0n1p2
+      command: "mkfs.ext4 {{ disk }}p2"
       become: true
       become_user: root
 
     - name: Mount second partition to /mnt
       mount:
-        src: /dev/nvme0n1p2
+        src: "{{ disk }}p2"
         path: /mnt
         fstype: ext4
         state: mounted
@@ -61,13 +64,13 @@
       file:
         path: /mnt/boot/EFI
         state: directory
-        mode: '0755'
+        mode: "0755"
       become: true
       become_user: root
 
     - name: Mount first partition to /mnt/boot/EFI
       mount:
-        src: /dev/nvme0n1p1
+        src: "{{ disk }}p1"
         path: /mnt/boot/EFI
         fstype: vfat
         state: mounted
@@ -78,19 +81,17 @@
     - name: Install base packages
       command: pacstrap /mnt base base-devel linux linux-firmware dhcpcd docker docker-compose hdparm openssh grub
 
-
     - name: Generate fstab (check manually)
       command: genfstab -U /mnt >> /mnt/etc/fstab
 
     - name: Chroot into the installed system
       shell: arch-chroot /mnt /bin/bash -c "{{ item }}"
+      become: true
       with_items:
         - "timedatectl set-timezone {{ timezone }}"
         - "echo 'root:{{ password }}' | chpasswd"
         - "useradd -m -s /bin/bash {{ new_user_name }}"
         - "echo '{{ new_user_name }}:{{ password }}' | chpasswd"
-        - "sed -i 's/^#en_US.UTF-8 UTF-8$/en_US.UTF-8 UTF-8/' /etc/locale.gen"
-        - "locale-gen"
         - "echo 'LANG=en_US.UTF-8' > /etc/locale.conf"
         - "pacman -Syu --noconfirm efibootmgr neovim python"
         - "grub-install --target=x86_64-efi --efi-directory=/boot/EFI"
@@ -99,3 +100,6 @@
         - "systemctl enable sshd"
         - "systemctl enable dhcpcd"
         - "sed -i 's/^#Port 22$/Port 2002/' /etc/ssh/sshd_config"
+        # add user to sudoer
+        - "sed -i 's/^# %wheel ALL=(ALL) ALL$/%wheel ALL=(ALL) ALL/' /etc/sudoers"
+        - "usermod -aG wheel {{ new_user_name }}"

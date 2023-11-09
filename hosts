@@ -2,4 +2,7 @@
 localhost ansible_connection=local
 
 [managed]
-host1 ansible_host=zongpitt.tplinkdns.com ansible_port=2002 ansible_user=zong
+server ansible_host=zongpitt.tplinkdns.com ansible_port=2002 ansible_user=zong
+
+[pc]
+pc ansible_host=192.168.0.230 ansible_port=2002 ansible_user=zong

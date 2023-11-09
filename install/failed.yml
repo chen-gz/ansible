@@ -1,0 +1,21 @@
+---
+# brefore using this script, should check each block. Most operation are not recoverable and not idempotent.
+- name: Install arclinux
+  hosts: localhost
+  become: true
+
+  vars:
+    timezone: "America/New_York"
+    password: "password"
+    new_user_name: "zong" 
+    disk: "/dev/nvme1n1"  # this should be check before using this script.
+
+  tasks:
+    - name: Generate fstab (check manually, this some time not working)
+      command: genfstab -U /mnt >> /mnt/etc/fstab
+
+    - name: Chroot into the installed system
+      shell: arch-chroot /mnt /bin/bash -c "{{ item }}"
+      with_items:
+        - "timedatectl set-timezone {{ timezone }}"
+        - "systemctl enable sshd"

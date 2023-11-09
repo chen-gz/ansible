@@ -1,0 +1,37 @@
+---
+- name: install onedrive
+  hosts: pc
+
+  tasks:
+    - name: install d-complier and d-runtime for onedrive
+      become: true
+      pacman:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - d-runtime
+        - d-compiler
+
+    - name: make aur package `onedrive` and install it
+      become: false
+      shell: |
+        cd /tmp
+        git clone https://aur.archlinux.org/onedrive-abraunegg.git
+        cd onedrive-abraunegg
+        makepkg -s
+      # when folder /tmp/onedrive-abraunegg not exist
+      when: not (lookup('file', '/tmp/onedrive-abraunegg', errors='ignore') is defined)
+
+    - name: install onedrive
+      become: true
+      pacman:
+        # match version automatically
+        name: /tmp/onedrive-abraunegg/onedrive-abraunegg-2.4.25-1-x86_64.pkg.tar.zst
+        state: present
+    - name: remove onedrive make requirement
+      become: true
+      pacman:
+        name: "{{ item }}"
+        state: absent
+      with_items:
+        - d-complier

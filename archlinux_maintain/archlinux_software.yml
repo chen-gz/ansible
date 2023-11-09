@@ -1,0 +1,52 @@
+---
+- name: Configure SSH
+  hosts: pc
+
+  tasks:
+    - name: install software
+      become: true
+      pacman:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - git         # git
+        - nvidia      # nvidia driver
+        - gnome-shell # desktop environment
+        - gdm         # display manager
+        - chromium    # browser
+        - ibus-rime   # input method
+        - gnome-terminal # terminal
+        - telegram-desktop # telegram
+        - pycharm-community-edition # pycharm
+        - python-pytorch-opt-cuda
+        - archlinux-wallpaper
+        - gnome-tweaks
+        - gnome-control-center
+        - wqy-microhei             # chinese support
+        - ansible-core
+    - name: remove package
+      become: true
+      pacman:
+        name: "{{ item }}"
+        state: absent
+      with_items:
+        - xterm # xterm when gnome-terminal not working
+
+    - name: gdm set to x11
+      become: true
+      lineinfile:
+        path: /etc/gdm/custom.conf
+        regexp: "^#?WaylandEnable"
+        line: "WaylandEnable=false"
+    - name: try to update locale
+      become: true
+      locale_gen:
+        name: en_US.UTF-8
+        state: present
+
+    - name: enable gdm
+      become: true
+      service:
+        name: gdm
+        state: started
+        enabled: true
