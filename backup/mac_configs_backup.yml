@@ -12,10 +12,10 @@
         cmd: |
           tar -czvf  {{ backup_file }}
           -C ~/
-          ~/.ssh
-          ~/.mc
-          ~/.gitconfig
-          ~/.ideavimrc
+          .ssh
+          .mc/
+          .gitconfig
+          .ideavimrc
 
     - name: Upload backup file to minio
       command:

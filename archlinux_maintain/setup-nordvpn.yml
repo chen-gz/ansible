@@ -1,0 +1,31 @@
+---
+- name: setup nordvpn
+  hosts: pc
+  vars:
+    user: zong
+  tasks:
+    - name: make aur package `nordvpn-bin`
+      become: false
+      shell: |
+        cd /tmp
+        git clone https://aur.archlinux.org/nordvpn-bin.git 
+        cd nordvpn-bin
+        makepkg -s
+      when: not (lookup('file', '/tmp/nordvpn-bin', errors='ignore') is defined)
+
+    - name: install nordvpn
+      become: true
+      pacman:
+        name: /tmp/nordvpn-bin/nordvpn-bin-3.16.7-1-x86_64.pkg.tar.zst
+        state: present
+
+    - name: enable nordvpn service
+      become: true
+      service:
+        name: nordvpnd
+        state: started
+        enabled: true
+
+    - name: allow user to access nordvpnd
+      become: true
+      command: usermod -aG nordvpn {{ user }}

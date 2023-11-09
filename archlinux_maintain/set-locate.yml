@@ -1,0 +1,15 @@
+---
+- name: setup locate
+  hosts: pc
+
+  tasks:
+    - name: install software
+      become: true
+      pacman:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - mlocate
+    - name: update locate database
+      command: updatedb
+      become: true

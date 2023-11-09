@@ -23,7 +23,12 @@
         - gnome-tweaks
         - gnome-control-center
         - wqy-microhei             # chinese support
-        - ansible-core
+        - ansible
+        - doublecmd-qt5
+        - less
+        - fuse2
+        - gnome-shell-extension-appindicator
+        - gnome-shell-extensions
     - name: remove package
       become: true
       pacman:
@@ -32,7 +37,9 @@
       with_items:
         - xterm # xterm when gnome-terminal not working
         - dconf-editor
-
+    - name: enable gnome extension
+      become: false
+      shell: gsettings set org.gnome.shell disable-user-extensions false
     # - name: gdm set to x11
     #   become: true
     #   lineinfile:
