@@ -1,7 +1,7 @@
 # This is an ansible playbook to update the system
 ---
 - name: Update all hosts
-  hosts: all
+  hosts: server, pc
   become: true
 
   tasks:

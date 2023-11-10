@@ -29,6 +29,12 @@
         - fuse2
         - gnome-shell-extension-appindicator
         - gnome-shell-extensions
+        - conky
+        - gnome-system-monitor
+        - papirus-icon-theme
+        - gnome-shell-extension-dash-to-panel
+        
+
     - name: remove package
       become: true
       pacman:
@@ -37,6 +43,8 @@
       with_items:
         - xterm # xterm when gnome-terminal not working
         - dconf-editor
+        - python-torchvision-cuda
+        - pavucontrol
     - name: enable gnome extension
       become: false
       shell: gsettings set org.gnome.shell disable-user-extensions false

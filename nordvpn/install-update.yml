@@ -1,9 +1,16 @@
 ---
-- name: setup nordvpn
-  hosts: pc
+- name: nordvpn install and update
+  hosts: pc, server
   vars:
     user: zong
+    version: 3.16.7-1
   tasks:
+    - name: if /tmp/nordvpn-bin exists, remove it
+      become: true
+      file:
+        path: /tmp/nordvpn-bin
+        state: absent
+
     - name: make aur package `nordvpn-bin`
       become: false
       shell: |
@@ -11,12 +18,11 @@
         git clone https://aur.archlinux.org/nordvpn-bin.git 
         cd nordvpn-bin
         makepkg -s
-      when: not (lookup('file', '/tmp/nordvpn-bin', errors='ignore') is defined)
 
     - name: install nordvpn
       become: true
       pacman:
-        name: /tmp/nordvpn-bin/nordvpn-bin-3.16.7-1-x86_64.pkg.tar.zst
+        name: /tmp/nordvpn-bin/nordvpn-bin-{{ version }}-x86_64.pkg.tar.zst
         state: present
 
     - name: enable nordvpn service

@@ -1,0 +1,19 @@
+---
+- name: setup zoom
+  hosts: pc
+  vars:
+    user: zong
+  tasks:
+    - name: make aur package `zoom`
+      become: false
+      shell: |
+        cd /tmp
+        git clone https://aur.archlinux.org/zoom.git
+        cd zoom
+        makepkg -s
+
+    - name: install zoom
+      become: true
+      pacman:
+        name: /tmp/zoom/zoom-5.16.6-1-x86_64.pkg.tar.zst
+        state: present
