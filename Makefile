@@ -7,8 +7,6 @@ url := ssh://gitea@git.ggeta.com:2002/guangzong/ansible.git
 # Generate a random string as folder name
 folder := $(shell cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
 
-
-.ONESHELL:
 git:
 # Clone the repository to /tmp
 	git clone $(url) /tmp/$(folder)
@@ -22,13 +20,5 @@ git:
 # Navigate to /tmp/repo and add changes all changes to the Git repository
 	cd /tmp/$(folder) && git add .
 
-	cd /tmp/$(folder) && git commit -m "update"
+	cd /tmp/$(folder) && git commit -m "$(msg)"
 	cd /tmp/$(folder) && git push
-
-
-
-# commit:
-# 	@echo "Enter commit message: "
-# 	@read msg; \
-# 	echo $$msg; 
-# 	# git commit -m "$$msg"
