@@ -6,7 +6,7 @@
     version: 3.16.7-1
   tasks:
     - name: if /tmp/nordvpn-bin exists, remove it
-      become: true
+      become: false
       file:
         path: /tmp/nordvpn-bin
         state: absent

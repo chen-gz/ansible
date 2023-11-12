@@ -1,28 +1,25 @@
 ---
 - name: Backup ssh configs/minio client config
-  hosts: pc
+  hosts: local
   become: false
   vars:
     backup_file: "/tmp/config-backup.tar.gz"
-    remote_backup_file: "local/server-backup/arch-config-backup.tar.gz"
+    remote_backup_file: "local/server-backup/mac-config-backup.tar.gz"
 
   tasks:
-    - name: Package configs
+    - name: Package ssh config
       command:
         cmd: |
           tar -czvf  {{ backup_file }}
           -C ~/
           .ssh
-          .mcli
+          .mc/
           .gitconfig
           .ideavimrc
-          .config/conky
-          .config/fish
-
 
     - name: Upload backup file to minio
       command:
-        cmd: "mcli cp {{ backup_file }} {{ remote_backup_file }}"
+        cmd: "mc cp {{ backup_file }} {{ remote_backup_file }}"
 
     - name: Remove temporary archive file
       file:

@@ -33,8 +33,16 @@
         - gnome-system-monitor
         - papirus-icon-theme
         - gnome-shell-extension-dash-to-panel
+        - pacutils
+        - bc # bc is an arbitrary precision numeric processing language.
+        - fzf # for vim and command line finder
+        - xclip # for vim copy
+        - cmake # cpp build system
+        - nodejs  # for neovim with copilot plugin
+        - ttf-jetbrains-mono-nerd # nerd font
+        - clang 
         
-
+        
     - name: remove package
       become: true
       pacman:

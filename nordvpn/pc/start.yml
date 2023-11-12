@@ -1,0 +1,38 @@
+# This is an ansible playbook to update the system
+---
+- name: Update all hosts
+  hosts: pc
+  become: true
+
+  tasks:
+    - name: Remove specific sports if they exist
+      become: true
+      ansible.builtin.command:
+        cmd: "ip rule del sport {{ item.port }} table main priority {{ item.priority }}"
+      loop:
+        - { port: 22, priority: 100 }
+        - { port: 80, priority: 101 }
+        - { port: 443, priority: 102 }
+        - { port: 2002, priority: 103 }
+      ignore_errors: yes
+      failed_when: false
+      
+
+    - name: disable nordvpn autoconnect
+      become: false
+      command: nordvpn s autoconnect off
+
+    - name: Before starting NordVPN, disable specific sports
+      become: true
+      ansible.builtin.command:
+        cmd: "ip rule add sport {{ item.port }} table main priority {{ item.priority }}"
+      loop:
+        - { port: 22, priority: 100 }
+        - { port: 80, priority: 101 }
+        - { port: 443, priority: 102 }
+        - { port: 2002, priority: 103 }
+
+        
+    - name: connect nordvpn to New_York
+      become: false
+      command: nordvpn connect New_York

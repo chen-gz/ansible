@@ -1,0 +1,19 @@
+---
+- name: Get total package size 
+  hosts: pc
+  become: false
+  
+
+  tasks:
+    - name: get total package size
+      become: false
+      shell: pacman -Qi | awk '/^Installed Size/ {print $4, $5}' | sed 's/GiB/*1048576/; s/MiB/*1024/; s/KiB//; s/B/*0.9765625/' | paste -sd+ - | bc
+      register: p_size
+
+    - name: Show it in bytes (convert to float number)
+      debug:
+          msg: "{{ p_size.stdout_lines }} Bytes"
+
+    - name: Show it in GB (convert to float number)
+      debug:
+        msg: "{{ (p_size.stdout_lines[0] | float) / 1024 / 1024 }} GB"

@@ -1,0 +1,16 @@
+# This is an ansible playbook to update the system
+---
+- name: get list of file not belong to any package
+  hosts: pc
+  become: true
+
+  tasks:
+    - name: get list of file not belong to any package
+      become: false
+      command: pacreport --unowned-files
+      # get output and print it
+      register: unowned_files
+
+    - name: Show unowned files
+      debug:
+        var: unowned_files.stdout_lines

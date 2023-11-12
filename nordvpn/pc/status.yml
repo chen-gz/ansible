@@ -1,0 +1,17 @@
+# This is an ansible playbook to update the system
+---
+- name: Update all hosts
+  hosts: pc
+  become: true
+
+  tasks:
+    - name: get nordvpn status
+      become: false
+      command: nordvpn status
+      # get output and print it
+      register: vpn_status
+
+    - name: Show nordvpn status
+      debug:
+        var: vpn_status.stdout_lines
+              

@@ -1,0 +1,27 @@
+---
+- name: setup neovim
+  hosts: pc
+
+  tasks:
+    - name: make it as alias of vi
+      become: true
+      command:
+        cmd: ln -s /usr/bin/nvim /usr/bin/vi
+        creates: /usr/bin/vi
+    - name: install packer
+      become: false
+      git:
+        dest: ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+        repo: "https://github.com/wbthomason/packer.nvim"
+        depth: 1
+
+#    - name: clone the config repo
+#      become: false
+#      git:
+#        dest: ~/.config/nvim
+#        repo: https://github.com/chen-gz/nvim_conf
+      
+      
+    - name: setup copilot
+      become: false
+      command: git clone https://github.com/github/copilot.vim.git ~/.config/nvim/pack/github/start/copilot.vim
