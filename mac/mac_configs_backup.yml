@@ -1,6 +1,6 @@
 ---
 - name: Backup ssh configs/minio client config
-  hosts: local
+  hosts: localhost
   become: false
   vars:
     backup_file: "/tmp/config-backup.tar.gz"
@@ -16,6 +16,10 @@
           .mc/
           .gitconfig
           .ideavimrc
+          .config/nvim
+          .local/share/nvim/
+          .config/iterm2
+
 
     - name: Upload backup file to minio
       command:
