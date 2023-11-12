@@ -7,24 +7,20 @@ folder := $(shell cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 8 | h
 
 
 git:
-	echo $(folder)
 # Clone the repository to /tmp
 	git clone $(url) /tmp/$(folder)
 
-#   move .git to /tmp/repo
-	mv /tmp/$(folder)/.git /tmp/repo/.git
-
 # Use rsync to synchronize files from the current directory to /tmp/repo
-	rsync -av --delete --exclude .git/ ./ /tmp/repo/
+	rsync -av --delete --exclude .git/ ./ /tmp/$(folder)/
 	
 # set git file mode to false
-	cd /tmp/repo && git config core.fileMode false
+	cd /tmp/$(folder) && git config core.fileMode false
 
 # Navigate to /tmp/repo and add changes all changes to the Git repository
-	cd /tmp/repo && git add .
+	cd /tmp/$(folder) && git add .
 
 # Navigate to /tmp/repo and commit the changes
-	cd /tmp/repo && git commit -m "update"
+	cd /tmp/$(folder) && git commit -m "update"
 
 # Navigate to /tmp/repo and push the changes to the remote repository
-	cd /tmp/repo && git push
+	cd /tmp/$(folder) && git push
