@@ -9,6 +9,9 @@ git:
 
 	# Use rsync to synchronize files from the current directory to /tmp/repo
 	rsync -av --delete --exclude .git/ ./ /tmp/repo/
+	
+	# set git file mode to false
+	cd /tmp/repo && git config core.fileMode false
 
 	# Navigate to /tmp/repo and add changes all changes to the Git repository
 	cd /tmp/repo && git add .
@@ -17,4 +20,4 @@ git:
 	cd /tmp/repo && git commit -m "update"
 
 	# Navigate to /tmp/repo and push the changes to the remote repository
-	cd /tmp/repo && git push 
+	cd /tmp/repo && git push
