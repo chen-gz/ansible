@@ -1,4 +1,6 @@
-.PHONY: git
+.PHONY: git 
+
+all: git
 
 # url := <URL_TO_YOUR_REPO>  # Replace with the actual URL of the Git repository
 url := ssh://gitea@git.ggeta.com:2002/guangzong/ansible.git
@@ -6,6 +8,7 @@ url := ssh://gitea@git.ggeta.com:2002/guangzong/ansible.git
 folder := $(shell cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
 
 
+.ONESHELL:
 git:
 # Clone the repository to /tmp
 	git clone $(url) /tmp/$(folder)
@@ -19,8 +22,13 @@ git:
 # Navigate to /tmp/repo and add changes all changes to the Git repository
 	cd /tmp/$(folder) && git add .
 
-# Navigate to /tmp/repo and commit the changes
 	cd /tmp/$(folder) && git commit -m "update"
-
-# Navigate to /tmp/repo and push the changes to the remote repository
 	cd /tmp/$(folder) && git push
+
+
+
+# commit:
+# 	@echo "Enter commit message: "
+# 	@read msg; \
+# 	echo $$msg; 
+# 	# git commit -m "$$msg"
