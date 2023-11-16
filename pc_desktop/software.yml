@@ -69,6 +69,7 @@
         - meld
         - neovide
         - rsync
+        - gnome-music
 
     - name: remove package
       become: true
