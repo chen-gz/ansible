@@ -19,6 +19,7 @@
           .config/nvim
           .local/share/nvim/
           .config/iterm2
+          .config/fish
 
 
     - name: Upload backup file to minio

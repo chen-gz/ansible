@@ -20,5 +20,10 @@ git:
 # Navigate to /tmp/repo and add changes all changes to the Git repository
 	cd /tmp/$(folder) && git add .
 
-	cd /tmp/$(folder) && git commit -m "$(msg)"
+	cd /tmp/$(folder) && git commit -m "update"
 	cd /tmp/$(folder) && git push
+
+.PHONY: pc_desktop/software.yml
+pc_desktop/software.yml:
+	ansible-playbook -i hosts ./pc_desktop/software.yml
+	

@@ -41,3 +41,5 @@
     - name: After starting NordVPN, restart onedrive
       become: false
       command: systemctl restart onedrive --user
+
+      

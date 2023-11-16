@@ -1,0 +1,12 @@
+---
+- name: Start bluetooth
+  hosts: pc
+  become: true
+      
+  tasks:
+  - name: enable bluetooth
+    become: true
+    service:
+      name: bluetooth
+      state: started
+      enabled: true

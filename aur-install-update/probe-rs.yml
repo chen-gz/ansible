@@ -1,0 +1,37 @@
+---
+- name: probe-rs
+  hosts: pc
+  vars:
+    version: 0.21.0-1
+    package_name: probe-rs
+    uname: zong
+  tasks:
+    - name: install dependencies
+      become: true
+      pacman:
+        name: libftdi
+        state: present 
+    - name: if /tmp/{{ package_name }} exists, remove it
+      become: false
+      file:
+        path: /tmp/{{ package_name }}
+        state: absent
+
+    - name: make aur package `{{ package_name }}`
+      become: false
+      shell: |
+        cd /tmp
+        git clone https://aur.archlinux.org/{{ package_name }}.git
+        cd {{ package_name }}
+        makepkg --skipchecksums
+
+    - name: install {{ package_name }}
+      become: true
+      pacman:
+        name: /tmp/{{ package_name }}/{{ package_name }}-{{ version }}-x86_64.pkg.tar.zst
+        state: present
+          
+    - name: add to uucp
+      become: true
+      command: usermod -aG uucp {{ uname }}
+

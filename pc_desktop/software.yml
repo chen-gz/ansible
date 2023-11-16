@@ -3,18 +3,24 @@
   hosts: pc
 
   tasks:
+    - name: Full system upgrade
+      become: true
+      community.general.pacman:
+        update_cache: true
+        upgrade: true
+
     - name: install software
       become: true
       pacman:
         name: "{{ item }}"
         state: present
       with_items:
-        - git         # git
-        - nvidia      # nvidia driver
+        - git # git
+        - nvidia # nvidia driver
         - gnome-shell # desktop environment
-        - gdm         # display manager
-        - chromium    # browser
-        - ibus-rime   # input method
+        - gdm # display manager
+        - chromium # browser
+        - ibus-rime # input method
         - gnome-terminal # terminal
         - telegram-desktop # telegram
         - pycharm-community-edition # pycharm
@@ -22,7 +28,7 @@
         - archlinux-wallpaper
         - gnome-tweaks
         - gnome-control-center
-        - wqy-microhei             # chinese support
+        - wqy-microhei # chinese support
         - ansible
         - doublecmd-qt5
         - less
@@ -38,11 +44,32 @@
         - fzf # for vim and command line finder
         - xclip # for vim copy
         - cmake # cpp build system
-        - nodejs  # for neovim with copilot plugin
+        - nodejs # for neovim with copilot plugin
         - ttf-jetbrains-mono-nerd # nerd font
-        - clang 
-        
-        
+        - clang
+        - pyright
+        - ripgrep
+        - ninja
+        - noto-fonts-emoji
+        - curl
+        - texlab
+        - lua-language-server
+        - texlive
+        - zathura
+        - zathura-pdf-mupdf
+        - arm-none-eabi-gcc
+        - arm-none-eabi-gdb
+        - arm-none-eabi-newlib
+        - arm-none-eabi-binutils
+        - rustup
+        - bluez
+        - rubber # for latex
+        - eog # image viewer
+        - npm
+        - meld
+        - neovide
+        - rsync
+
     - name: remove package
       become: true
       pacman:
@@ -53,6 +80,8 @@
         - dconf-editor
         - python-torchvision-cuda
         - pavucontrol
+        - gnome-console
+        - alacritty
     - name: enable gnome extension
       become: false
       shell: gsettings set org.gnome.shell disable-user-extensions false
