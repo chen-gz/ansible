@@ -69,7 +69,6 @@
         - meld
         - neovide
         - rsync
-        - gnome-music
 
     - name: remove package
       become: true
@@ -83,6 +82,7 @@
         - pavucontrol
         - gnome-console
         - alacritty
+        - gnome-music
     - name: enable gnome extension
       become: false
       shell: gsettings set org.gnome.shell disable-user-extensions false
