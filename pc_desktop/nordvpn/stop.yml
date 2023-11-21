@@ -5,10 +5,10 @@
   become: true
 
   tasks:
-    - name: disconnect nordvpn 
+    - name: disconnect nordvpn
       become: false
       command: nordvpn disconnect
-      
+
     - name: Remove specific sports if they exist
       become: true
       ansible.builtin.command:
@@ -20,3 +20,7 @@
         - { port: 2002, priority: 103 }
       ignore_errors: yes
       failed_when: false
+
+    - name: After starting NordVPN, restart onedrive
+      become: false
+      command: systemctl restart onedrive --user

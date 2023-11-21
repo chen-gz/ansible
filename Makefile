@@ -27,3 +27,12 @@ git:
 pc_desktop/software.yml:
 	ansible-playbook -i hosts ./pc_desktop/software.yml
 	
+.PHONY: pc_desktop/nordvpn/start.yml
+pc_desktop/nordvpn/start.yml:
+	ansible-playbook -i hosts ./pc_desktop/nordvpn/start.yml
+
+.PHONY: pc_desktop/nordvpn/stop.yml
+
+pc_desktop/nordvpn/stop.yml:
+	ansible-playbook -i hosts ./pc_desktop/nordvpn/stop.yml
+

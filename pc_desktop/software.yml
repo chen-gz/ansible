@@ -69,6 +69,10 @@
         - meld
         - neovide
         - rsync
+        - vlc
+        - usbutils
+        - rhythmbox
+        - arc-gtk-theme
 
     - name: remove package
       become: true
@@ -83,6 +87,8 @@
         - gnome-console
         - alacritty
         - gnome-music
+        - neovim-qt
+        - lollypop # music player
     - name: enable gnome extension
       become: false
       shell: gsettings set org.gnome.shell disable-user-extensions false

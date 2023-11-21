@@ -17,7 +17,6 @@
       ignore_errors: yes
       failed_when: false
 
-
     - name: disable nordvpn autoconnect
       become: false
       command: nordvpn s autoconnect off
@@ -32,14 +31,11 @@
         - { port: 443, priority: 102 }
         - { port: 2002, priority: 103 }
 
-
     - name: connect nordvpn to New_York
       become: false
       command: nordvpn connect New_York
-
 
     - name: After starting NordVPN, restart onedrive
       become: false
       command: systemctl restart onedrive --user
 
-      
