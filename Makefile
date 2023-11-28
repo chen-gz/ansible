@@ -36,3 +36,18 @@ pc_desktop/nordvpn/start.yml:
 pc_desktop/nordvpn/stop.yml:
 	ansible-playbook -i hosts ./pc_desktop/nordvpn/stop.yml
 
+.PHONY: aur-install-update/sealeae-logic2.yml
+aur-install-update/sealeae-logic2.yml:
+	ansible-playbook -i hosts ./aur-install-update/sealeae-logic2.yml
+
+.PHONY: aur-install-update/sioyek.yml
+aur-install-update/sioyek.yml:
+	ansible-playbook -i hosts ./aur-install-update/sioyek.yml
+
+.PHONY: aur-install-update/probe-rs.yml
+aur-install-update/probe-rs.yml:
+	ansible-playbook -i hosts ./aur-install-update/probe-rs.yml
+
+.PHONY: wsl/software.yml
+wsl/software.yml:
+	ansible-playbook wsl/software.yml

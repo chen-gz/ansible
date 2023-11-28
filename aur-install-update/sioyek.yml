@@ -1,15 +1,15 @@
 ---
-- name: probe-rs
-  hosts: localhost
+- name: sioyek install and update
+  hosts: pc
   vars:
-    version: 0.21.0-1
-    package_name: probe-rs
-    uname: zong
+    version: 2.0.0-5
+    package_name: sioyek
+
   tasks:
     - name: install dependencies
       become: true
       pacman:
-        name: libftdi
+        name: qt5-3d
         state: present
     - name: if /tmp/{{ package_name }} exists, remove it
       become: false
@@ -30,7 +30,3 @@
       pacman:
         name: /tmp/{{ package_name }}/{{ package_name }}-{{ version }}-x86_64.pkg.tar.zst
         state: present
-
-    - name: add to uucp
-      become: true
-      command: usermod -aG uucp {{ uname }}

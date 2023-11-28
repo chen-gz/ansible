@@ -1,0 +1,43 @@
+# for nvudia we need add /opt/cuda/bin/ to fish path that enbale
+---
+- name: Configure SSH
+  hosts: localhost
+
+  tasks:
+    - name: Full system upgrade
+      become: true
+      community.general.pacman:
+        update_cache: true
+        upgrade: true
+
+    - name: install software
+      become: true
+      pacman:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - ansible
+        - usbutils
+        - usbip
+        - ninja
+        - python-pytorch-cuda
+
+    - name: remove package
+      become: true
+      pacman:
+        name: "{{ item }}"
+        state: absent
+      with_items:
+        - xterm # xterm when gnome-terminal not working
+    # - name: try to update locale
+    #   become: true
+    #   locale_gen:
+    #     name: en_US.UTF-8
+    #     state: present
+
+    # - name: enable gdm
+    #   become: true
+    #   service:
+    #     name: gdm
+    #     state: started
+    #     enabled: true

@@ -73,7 +73,7 @@
         - usbutils
         - rhythmbox
         - arc-gtk-theme
-
+        - htop
     - name: remove package
       become: true
       pacman:
