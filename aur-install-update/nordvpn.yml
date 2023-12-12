@@ -1,9 +1,9 @@
 ---
 - name: nordvpn install and update
-  hosts: pc, server
+  hosts: server 
   vars:
     user: zong
-    version: 3.16.7-1
+    version: 3.16.9-1
   tasks:
     - name: if /tmp/nordvpn-bin exists, remove it
       become: false
