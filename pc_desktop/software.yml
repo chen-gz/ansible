@@ -28,6 +28,7 @@
         - archlinux-wallpaper
         - gnome-tweaks
         - gnome-control-center
+        - gnome-keyring
         - wqy-microhei # chinese support
         - ansible
         - doublecmd-qt5

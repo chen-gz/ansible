@@ -5,6 +5,7 @@
   # become: true
   vars:
     # us - America/New_York
+    user: zong
     timezone: "America/New_York"
     theme_url: "https://github.com/catppuccin/gtk/releases/download/v0.7.0/Catppuccin-Frappe-Standard-Pink-Dark.zip"
 
@@ -36,4 +37,15 @@
       command: unzip /tmp/theme.zip -d ~/.themes
       become: true
 
+    - name: Change root shell to fish
+      user:
+        name: root
+        shell: /usr/bin/fish
+      become: true
+
+    - name: Change user shell to fish
+      user:
+        name: "{{ user }}"
+        shell: /usr/bin/fish
+      become: true
 

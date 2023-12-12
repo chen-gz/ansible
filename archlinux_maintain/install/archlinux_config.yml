@@ -48,14 +48,3 @@
         state: present
       become: true
 
-    - name: Change root shell to fish
-      user:
-        name: root
-        shell: /usr/bin/fish
-      become: true
-
-    - name: Change user shell to fish
-      user:
-        name: "{{ user }}"
-        shell: /usr/bin/fish
-      become: true
