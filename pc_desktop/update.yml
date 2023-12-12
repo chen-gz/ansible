@@ -1,13 +1,39 @@
 # This is an ansible playbook to update the system
 ---
 - name: Update all hosts
-  hosts: pc
-  become: true
+  hosts: localhost
+  # become: true
+  vars:
+    # us - America/New_York
+    timezone: "America/New_York"
+    theme_url: "https://github.com/catppuccin/gtk/releases/download/v0.7.0/Catppuccin-Frappe-Standard-Pink-Dark.zip"
+
 
   tasks:
     - name: Full system upgrade
       community.general.pacman:
         update_cache: true
         upgrade: true
+      become: true
+    - name: enable gnome extension
+      become: false
+      shell: gsettings set org.gnome.shell disable-user-extensions false
+    - name: update locate database
+      command: updatedb
+      become: true
+    - name: set resize windwos with right button
+      command: gsettings set org.gnome.desktop.wm.preferences resize-with-right-button true
+      become: false
+    - name: set timezone
+      command: timedatectl set-timezone {{ timezone }}
+      become: true
+    - name: download theme
+      get_url:
+        url: "{{ theme_url }}"
+        dest: /tmp/theme.zip
+      become: false
+    - name: unzip theme
+      command: unzip /tmp/theme.zip -d ~/.themes
+      become: true
 
-        
+

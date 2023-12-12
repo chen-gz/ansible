@@ -1,6 +1,6 @@
 ---
 - name: Configure SSH
-  hosts: pc
+  hosts: localhost
 
   tasks:
     - name: Full system upgrade
@@ -74,6 +74,8 @@
         - rhythmbox
         - arc-gtk-theme
         - htop
+        - minio-client
+        - mlocate
     - name: remove package
       become: true
       pacman:
@@ -89,9 +91,9 @@
         - gnome-music
         - neovim-qt
         - lollypop # music player
-    - name: enable gnome extension
-      become: false
-      shell: gsettings set org.gnome.shell disable-user-extensions false
+
+
+
     # - name: gdm set to x11
     #   become: true
     #   lineinfile:

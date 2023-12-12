@@ -1,0 +1,40 @@
+---
+- name: install onedrive
+  hosts: localhost
+  vars:
+    user: zong
+    package_name: onedrive-abraunegg
+    version: 2.4.25-1
+
+  tasks:
+    - name: install make dependencies
+      become: true
+      pacman:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - d-runtime
+        - d-compiler
+
+    - name: make aur package {{ package_name }} 
+      become: false
+      shell: |
+        cd /tmp
+        git clone https://aur.archlinux.org/{{ package_name }}
+        cd {{ package_name }}
+        makepkg -s
+
+    - name: install {{ package_name }} 
+      become: true
+      pacman:
+        name: /tmp/{{ package_name }}/{{ package_name }}-{{ version }}-x86_64.pkg.tar.zst
+        state: present
+
+
+    - name: remove onedrive make requirement
+      become: true
+      pacman:
+        name: "{{ item }}"
+        state: absent
+      with_items:
+        - d-complier

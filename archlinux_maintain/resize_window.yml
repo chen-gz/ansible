@@ -1,7 +1,0 @@
----
-- name: Configure SSH
-  hosts: pc
-  tasks:
-    - name: set resize windwos with right button
-      command: gsettings set org.gnome.desktop.wm.preferences resize-with-right-button true
-      become: false
