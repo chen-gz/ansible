@@ -15,6 +15,7 @@
         name: "{{ item }}"
         state: present
       with_items:
+        - speedtest-cli # speedtest
         - git # git
         - nvidia # nvidia driver
         - gnome-shell # desktop environment
@@ -77,6 +78,8 @@
         - htop
         - minio-client
         - mlocate
+        - nautilus
+        - go
     - name: remove package
       become: true
       pacman:
