@@ -1,6 +1,6 @@
 ---
 - name: Configure SSH
-  hosts: pc
+  hosts: lab
 
   tasks:
     - name: Full system upgrade
@@ -15,6 +15,7 @@
         name: "{{ item }}"
         state: present
       with_items:
+        - xterm
         - git # git
         - nvidia # nvidia driver
         - gnome-shell # desktop environment
@@ -98,11 +99,11 @@
     #     path: /etc/gdm/custom.conf
     #     regexp: "^#?WaylandEnable"
     #     line: "WaylandEnable=false"
-    # - name: try to update locale
-    #   become: true
-    #   locale_gen:
-    #     name: en_US.UTF-8
-    #     state: present
+    - name: try to update locale
+      become: true
+      locale_gen:
+        name: en_US.UTF-8
+        state: present
 
     # - name: enable gdm
     #   become: true
