@@ -1,6 +1,6 @@
 ---
 - name: Configure SSH
-  hosts: lab
+  hosts: localhost
 
   tasks:
     - name: Full system upgrade
@@ -15,6 +15,7 @@
         name: "{{ item }}"
         state: present
       with_items:
+        - speedtest-cli # speedtest
         - xterm
         - git # git
         - nvidia # nvidia driver
@@ -29,6 +30,7 @@
         - archlinux-wallpaper
         - gnome-tweaks
         - gnome-control-center
+        - gnome-keyring
         - wqy-microhei # chinese support
         - ansible
         - doublecmd-qt5
@@ -75,6 +77,10 @@
         - rhythmbox
         - arc-gtk-theme
         - htop
+        - minio-client
+        - mlocate
+        - nautilus
+        - go
     - name: remove package
       become: true
       pacman:
@@ -90,9 +96,9 @@
         - gnome-music
         - neovim-qt
         - lollypop # music player
-    - name: enable gnome extension
-      become: false
-      shell: gsettings set org.gnome.shell disable-user-extensions false
+
+
+
     # - name: gdm set to x11
     #   become: true
     #   lineinfile:

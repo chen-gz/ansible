@@ -1,6 +1,6 @@
 ---
 - name: update blog backend
-  hosts: managed
+  hosts: server
   become: true
   gather_facts: yes
   vars:

@@ -1,0 +1,30 @@
+---
+- name: vscode
+  hosts: localhost
+  vars:
+    user: zong
+    package_name: visual-studio-code-bin
+    version: 1.85.0-1
+  tasks:
+    - name: install make dependencies
+      become: true
+      pacman:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - lsof
+
+    - name: make aur package {{ package_name }} 
+      become: false
+      shell: |
+        cd /tmp
+        git clone https://aur.archlinux.org/{{ package_name }}
+        cd {{ package_name }}
+        makepkg -s
+
+    - name: install {{ package_name }} 
+      become: true
+      pacman:
+        name: /tmp/{{ package_name }}/{{ package_name }}-{{ version }}-x86_64.pkg.tar.zst
+        state: present
+
