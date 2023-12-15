@@ -1,7 +1,7 @@
 ---
 # brefore using this script, should check each block. Most operation are not recoverable and not idempotent.
 - name: Install arclinux
-  hosts: localhost
+  hosts: lab
   become: true
 
   vars:
@@ -29,6 +29,7 @@
         part_end: 100MB
         flags: [boot, esp]
         state: present
+        label: gpt
       become: true
       become_user: root
 
@@ -43,6 +44,7 @@
         number: 2
         part_start: 100MB
         state: present
+        label: gpt
       become: true
       become_user: root
 
