@@ -17,18 +17,14 @@
         state: present
       with_items:
         - ansible
-        - usbutils
-        - usbip
         - ninja
-        - python-pytorch-cuda
+        - nodejs
+        - ripgrep
+        - fd
+        - unzip
+        - npm
+        - rustup
 
-    - name: remove package
-      become: true
-      pacman:
-        name: "{{ item }}"
-        state: absent
-      with_items:
-        - xterm # xterm when gnome-terminal not working
     # - name: try to update locale
     #   become: true
     #   locale_gen:
