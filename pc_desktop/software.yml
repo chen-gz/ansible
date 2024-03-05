@@ -15,6 +15,15 @@
         name: "{{ item }}"
         state: present
       with_items:
+        - fdupes # duplicate file finder
+        - kicad
+        - kicad-library
+        - kicad-library-3d
+        - os-prober
+
+        - wireguard-tools
+        - openresolv # dependency of wg-quick
+
         - speedtest-cli # speedtest
         - xterm
         - git # git
@@ -96,8 +105,6 @@
         - gnome-music
         - neovim-qt
         - lollypop # music player
-
-
 
     # - name: gdm set to x11
     #   become: true
