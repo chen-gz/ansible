@@ -16,15 +16,20 @@
           .mcli
           .gitconfig
           .ideavimrc
-          .config/conky
-          .config/fish
-          .gnupg
-          .config/nvim
-          .local/share/nvim
+          .gnupg/
           .ansible.cfg
           .config/fish
-
-
+          .config/nvim
+          .config/conky
+          .config/fish
+          .config/bspwm
+          .config/sxhkd
+          .config/picom
+          .config/polybar
+          .config/wireguard
+          .config/alacritty
+          .config/rofi
+          .local/share/rofi/
 
     - name: Upload backup file to minio
       command:
