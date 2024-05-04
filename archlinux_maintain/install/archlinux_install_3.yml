@@ -1,0 +1,31 @@
+---
+# brefore using this script, should check each block. Most operation are not recoverable and not idempotent.
+- name: Install arclinux 3
+  hosts: pc
+  become: true
+
+  vars:
+    timezone: "America/New_York"
+    password: "password"
+    new_user_name: "guangzong"
+    disk: "/dev/nvme1n1" # this should be check before using this script.
+
+  tasks:
+    - name: Chroot into the installed system
+      shell: arch-chroot /mnt /bin/bash -c "{{ item }}"
+      become: true
+      with_items:
+        - "echo 'root:{{ password }}' | chpasswd"
+        - "useradd -m -s /bin/bash {{ new_user_name }}"
+        - "echo '{{ new_user_name }}:{{ password }}' | chpasswd"
+        - "echo 'LANG=en_US.UTF-8' > /etc/locale.conf"
+        - "pacman -Syu --noconfirm efibootmgr neovim python"
+        - "grub-install --target=x86_64-efi --efi-directory=/boot/EFI"
+        - "grub-mkconfig -o /boot/grub/grub.cfg"
+        - "systemctl start sshd"
+        - "systemctl enable sshd"
+        - "systemctl enable dhcpcd"
+        - "sed -i 's/^#Port 22$/Port 2002/' /etc/ssh/sshd_config"
+        # add user to sudoer
+        # - "sed -i 's/^# %wheel ALL=(ALL) ALL$/%wheel ALL=(ALL) ALL/' /etc/sudoers"
+        # - "usermod -aG wheel {{ new_user_name }}"
