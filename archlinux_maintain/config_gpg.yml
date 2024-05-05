@@ -1,5 +1,5 @@
 ---
-- name: Configure SSH
+- name: Configure after install
   hosts: pc
   vars:
     kerserver: hkps://keys.openpgp.org
@@ -9,8 +9,12 @@
     - name: get gpg public key from key server
       command: gpg --keyserver {{ kerserver }} --recv-keys {{ my_key }}
       become: false
-    - name: copy public key to remote
-      copy:
-        src: ~/.ssh/id_ed25519.pub
-        dest: ~/.ssh/id_ed25519.pub
-      become: false
+    - name: locale
+      lineinfile:
+        path: /etc/locale.gen
+        line: en_US.UTF-8 UTF-8
+        state: present
+      become: true
+    - name: locale-gen
+      command: locale-gen
+      become: true

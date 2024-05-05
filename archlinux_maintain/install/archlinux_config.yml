@@ -10,8 +10,8 @@
       become: true
       lineinfile:
         path: /etc/sudoers
-        regexp: "^# %wheel ALL=(ALL) ALL"
-        line: "%wheel ALL=(ALL) ALL"
+        regexp: "^# %wheel ALL=(ALL) ALL NOPASSWD: ALL"
+        line: "%wheel ALL=(ALL) ALL NOPASSWD: ALL"
         validate: "visudo -cf %s"
     # remove sudo password for wheel user
 
@@ -28,13 +28,6 @@
         state: present
         key: "{{ my_key }}"
       become: false
-
-    #  - name: Add users to allow users
-    #    lineinfile:
-    #      path: /etc/ssh/sshd_config
-    #      regexp: '^#?AllowUsers'
-    #      line: 'AllowUsers {{ user }} gitea'
-    #    become: true
 
     - name: Restart SSH service
       service:
