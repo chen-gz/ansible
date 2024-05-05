@@ -1,8 +1,0 @@
----
-- name: disable sleep
-  hosts: pc
-  tasks:
-    - name: disable sleep
-      command: |
-       systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
-      become: true
