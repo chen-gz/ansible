@@ -1,7 +1,7 @@
 ---
 # brefore using this script, should check each block. Most operation are not recoverable and not idempotent.
 - name: Install arclinux
-  hosts: pc
+  hosts: localhost
   become: true
 
   vars:
@@ -22,7 +22,7 @@
         device: "{{ disk }}"
         label: gpt
 
-    - name: Create 100MB FAT32 partition
+    - name: Create 512MB FAT32 partition
       parted:
         device: "{{ disk }}"
         number: 1
@@ -42,7 +42,7 @@
       parted:
         device: "{{ disk }}"
         number: 2
-        part_start: 100MB
+        part_start: 512MB
         state: present
         label: gpt
       become: true
