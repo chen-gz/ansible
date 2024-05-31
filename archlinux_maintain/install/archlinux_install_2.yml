@@ -15,7 +15,7 @@
       command: pacman -Sy archlinux-keyring --noconfirm
 
     - name: Install base packages
-      command: pacstrap /mnt base base-devel linux linux-firmware dhcpcd docker docker-compose hdparm openssh grub
+      command: pacstrap /mnt base base-devel linux linux-firmware dhcpcd docker docker-compose openssh grub
 
     - name: Generate fstab (check manually, this may not work - i don't know why. manually execute the command)
       command: genfstab -U /mnt >> /mnt/etc/fstab

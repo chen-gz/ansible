@@ -1,7 +1,7 @@
 ---
 # brefore using this script, should check each block. Most operation are not recoverable and not idempotent.
 - name: Install arclinux
-  hosts: localhost
+  hosts: pc
   become: true
 
   vars:
