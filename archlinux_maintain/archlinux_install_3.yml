@@ -19,7 +19,7 @@
         - "echo '{{ new_user_name }}:{{ password }}' | chpasswd"
         - "echo 'LANG=en_US.UTF-8' > /etc/locale.conf"
         - "echo 'en_US.UTF-8' > /etc/locale.gen"
-	- "locale-gen"
+        - "locale-gen"
         - "pacman -Syu --noconfirm efibootmgr neovim python"
         - "grub-install --target=x86_64-efi --efi-directory=/boot/EFI"
         - "grub-mkconfig -o /boot/grub/grub.cfg"
