@@ -1,7 +1,7 @@
 ---
 # Brefore using this script, you should check each block carefully. Most operation are not recoverable and not idempotent.
 - name: Install arclinux
-  hosts: pc
+  hosts: tmp
   become: true
 
   vars:
@@ -34,7 +34,7 @@
       become_user: root
 
     - name: Format first partition as FAT32
-      command: "mkfs.fat -F32 {{ disk }}p1"
+      command: "mkfs.fat -F32 {{ disk }}1"
       become: true
       become_user: root
 
@@ -49,13 +49,13 @@
       become_user: root
 
     - name: Format second partition as ext4
-      command: "mkfs.ext4 {{ disk }}p2"
+      command: "mkfs.ext4 {{ disk }}2"
       become: true
       become_user: root
 
     - name: Mount second partition to /mnt
       mount:
-        src: "{{ disk }}p2"
+        src: "{{ disk }}2"
         path: /mnt
         fstype: ext4
         state: mounted
@@ -72,7 +72,7 @@
 
     - name: Mount first partition to /mnt/boot/EFI
       mount:
-        src: "{{ disk }}p1"
+        src: "{{ disk }}1"
         path: /mnt/boot/EFI
         fstype: vfat
         state: mounted

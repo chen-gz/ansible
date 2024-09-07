@@ -2,7 +2,6 @@
 - name: Configure SSH
   hosts: pc
   vars:
-    my_key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
     user: guangzong
 
   tasks:
@@ -21,13 +20,6 @@
         regexp: "^#?PasswordAuthentication"
         line: "PasswordAuthentication no"
       become: true
-
-    - name: Update authorized keys
-      authorized_key:
-        user: "{{ user }}"
-        state: present
-        key: "{{ my_key }}"
-      become: false
 
     - name: Restart SSH service
       service:

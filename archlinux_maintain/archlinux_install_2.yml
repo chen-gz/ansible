@@ -1,14 +1,13 @@
 ---
 # brefore using this script, should check each block. Most operation are not recoverable and not idempotent.
 - name: Install arclinux 2
-  hosts: pc
+  hosts: tmp
   become: true
 
   vars:
     timezone: "America/New_York"
     password: "password"
     new_user_name: "guangzong"
-    disk: "/dev/nvme1n1" # this should be check before using this script.
 
   tasks:
     - name: Update archlinux-keyring
