@@ -1,5 +1,5 @@
 ---
-# brefore using this script, should check each block. Most operation are not recoverable and not idempotent.
+# Brefore using this script, you should check each block carefully. Most operation are not recoverable and not idempotent.
 - name: Install arclinux
   hosts: pc
   become: true
@@ -8,7 +8,7 @@
     timezone: "America/New_York"
     password: "password"
     new_user_name: "guangzong"
-    disk: "/dev/nvme1n1" # this should be check before using this script.
+    disk: "/dev/sda" # this should be check before using this script.
 
   tasks:
     - name: Enable NTP (Network Time Protocol)
@@ -22,11 +22,11 @@
         device: "{{ disk }}"
         label: gpt
 
-    - name: Create 512MB FAT32 partition
+    - name: Create 1GB FAT32 partition
       parted:
         device: "{{ disk }}"
         number: 1
-        part_end: 512MB
+        part_end: 1GB
         flags: [boot, esp]
         state: present
         label: gpt
@@ -42,7 +42,7 @@
       parted:
         device: "{{ disk }}"
         number: 2
-        part_start: 512MB
+        part_start: 1GB
         state: present
         label: gpt
       become: true
